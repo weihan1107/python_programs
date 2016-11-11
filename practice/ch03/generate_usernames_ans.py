@@ -43,15 +43,29 @@ def generate_username(fields, usernames):
 def print_users(users):
     namewidth = 17
     usernamewidth = 9
-    print("{0:<{nw}} {1:^6} {2:{uw}}".format("Name", "ID", "Username", nw=namewidth, uw=usernamewidth))
-    print("{0:-<{nw}} {0:-<6} {0:-<{uw}}".format("", nw=namewidth, uw=usernamewidth))
+    page_max_line = 64
+    count = 1
     for key in sorted(users):
         user = users[key]
         initial = ""
         if user.middlename:
             initial = " " + user.middlename[0]
         name = "{0.surname}, {0.forename}{1}".format(user, initial)
-        print("{0:.<{nw}} ({1.id:4}) {1.username:{uw}}".format(name[:namewidth], user, nw=namewidth, uw=usernamewidth))
+        if count%(page_max_line*2) == 1: print_title(namewidth, usernamewidth)
+        if count%2 == 0:
+            print "{0:.<{nw}} ({1.id:4}) {1.username:{uw}}".format(name[:namewidth], user, nw=namewidth, uw=usernamewidth)
+        else:
+            print "{0:.<{nw}} ({1.id:4}) {1.username:{uw}}".format(name[:namewidth], user, nw=namewidth, uw=usernamewidth) + ' ',
+        if count%(page_max_line*2) == 0: print "{0:-^70}\n".format('Next Page')
+        count += 1
+
+def print_title(namewidth, usernamewidth):
+    print "{0:<{nw}} {1:^6} {2:{uw}}".format("Name", "ID", "Username", nw=namewidth, uw=usernamewidth) + ' ',
+    print "{0:<{nw}} {1:^6} {2:{uw}}".format("Name", "ID", "Username", nw=namewidth, uw=usernamewidth)
+
+    print "{0:-<{nw}} {0:-<6} {0:-<{uw}}".format("", nw=namewidth, uw=usernamewidth) + ' ',
+    print "{0:-<{nw}} {0:-<6} {0:-<{uw}}".format("", nw=namewidth, uw=usernamewidth)
+
 
 
 main()
