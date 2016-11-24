@@ -91,6 +91,8 @@ def check_date(list):
             elif (date_year == current_year and date_month == current_month and date_day == current_day):
                 return True
 
+    return True
+
 
 def opt_control():
     parser = optparse.OptionParser(usage="usage: %prog [options] [signin/signout] [username] [password]")
