@@ -1,5 +1,5 @@
 '''
-Auto download Taiwan GPS data from CWB 
+Auto download Taiwan GPS data from CWB (Central Weather Bureau) 
 
 Usage: python TWN_GPS_download.py [start_year] [start_doy] [end_year] [end_doy] 
 
@@ -12,10 +12,14 @@ import requests
 from bs4 import BeautifulSoup
 import datetime, sys
 
-start_year = int(sys.argv[1]) 
-start_doy  = int(sys.argv[2]) 
-end_year   = int(sys.argv[3]) 
-end_doy    = int(sys.argv[4]) 
+try:
+    start_year = int(sys.argv[1]) 
+    start_doy  = int(sys.argv[2]) 
+    end_year   = int(sys.argv[3]) 
+    end_doy    = int(sys.argv[4]) 
+except IndexError:
+    print "Usage: python TWN_GPS_download.py [start_year] [start_doy] [end_year] [end_doy]"
+    sys.exit()
 
 # doy to day
 start_time = datetime.datetime(start_year, 1, 1) + datetime.timedelta(days=start_doy-1)
@@ -36,7 +40,10 @@ s = requests.session()
 response = s.post('http://gdms.cwb.gov.tw/login/member_login.php', data=login_data, headers=head) 
 response = s.post('http://gdms.cwb.gov.tw/table-gps.php', data=search_data, headers=head)
 soup = BeautifulSoup(response.text, 'lxml')
-total_page = int(soup.select('.v')[0].strong.text)
+try:
+    total_page = int(soup.select('.v')[0].strong.text)
+except IndexError:
+    total_page = 0
 print "The search results have {0} page(s), and each page has at most 15 GPS data. ".format(total_page)
 page_count = 1
 data_count = 0
