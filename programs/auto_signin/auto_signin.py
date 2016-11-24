@@ -19,17 +19,17 @@ import optparse
 
 def main():
     opts, args = opt_control()
-    special_day_list = load_special_day(opts)
-    checkin = check_date(special_day_list)
-    if checkin:
-        print_information(opts.output_filename, "Today is work day !")
-    else:
-        print_information(opts.output_filename,  "Today is holiday !")
-        sys.exit()
-
     option    = args[0].lower()
     username  = args[1]
     passwd    = args[2]
+
+    special_day_list = load_special_day(opts)
+    checkin = check_date(special_day_list)
+    if checkin:
+        if option == 'signin': print_information(opts.output_filename, "Today is work day !")
+    else:
+        if option == 'signin': print_information(opts.output_filename,  "Today is holiday !")
+        sys.exit()
 
     delay_min = float(opts.delay_time)
 
