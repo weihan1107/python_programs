@@ -19,9 +19,8 @@ import optparse
 
 def main():
     opts, args = opt_control()
-    option    = args[0].lower()
-    username  = args[1]
-    passwd    = args[2]
+    option, username, passwd = args
+
 
     special_day_list = load_special_day(opts)
     checkin = check_date(special_day_list)
