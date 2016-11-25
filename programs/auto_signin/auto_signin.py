@@ -21,7 +21,6 @@ def main():
     opts, args = opt_control()
     option, username, passwd = args
 
-
     special_day_list = load_special_day(opts)
     checkin = check_date(special_day_list)
     if checkin:
@@ -58,7 +57,7 @@ def main():
 def load_special_day(opts):
     filename = opts.special_day_filename
     if filename is None:
-        print_information(opts.output_filename, "***ERROR: flag [-s] must be set a filename!")
+        print_information(opts.output_filename, "***ERROR: flag [-s] must be set a file!")
         sys.exit()
     special_day_list = []
     for line in open(filename, 'r'):
@@ -78,26 +77,23 @@ def check_date(list):
     current_day = datetime.datetime.now().day
     current_weekday = datetime.datetime.now().weekday()+1
 
-    for date_year, date_month, date_day, date_type in list:
-        if (current_weekday > 5):
+    if (current_weekday > 5):
+        for date_year, date_month, date_day, date_type in list:
             if (date_year == current_year and date_month == current_month and date_day == current_day and date_type == 'w'):
                 return True
-            elif (date_year == current_year and date_month == current_month and date_day == current_day):
-                return False
-        else:
+        return False
+    else:
+        for date_year, date_month, date_day, date_type in list:
             if (date_year == current_year and date_month == current_month and date_day == current_day and date_type == 'h'):
                 return False
-            elif (date_year == current_year and date_month == current_month and date_day == current_day):
-                return True
-
-    return True
+        return True
 
 
 def opt_control():
     parser = optparse.OptionParser(usage="usage: %prog [options] [signin/signout] [username] [password]")
-    parser.add_option("-d", default=0, dest="delay_time", help="set up the delay time [unit: minutes]")
-    parser.add_option("-s", default=None, dest="special_day_filename", help="special day file")
-    parser.add_option("-o", default=None, dest="output_filename", help="print information to this output file")
+    parser.add_option("-d", default=0, dest="delay_time", help="set up the delay time (unit: minutes, default: 0)")
+    parser.add_option("-s", default=None, dest="special_day_filename", help="assign a special day file")
+    parser.add_option("-o", default=None, dest="output_filename", help="assign a output file to print information")
     opts, args = parser.parse_args()
     return opts, args
 
