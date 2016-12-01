@@ -20,13 +20,14 @@ import optparse
 def main():
     opts, args = opt_control()
     option, username, passwd = args
-
+    now_time = datetime.datetime.now()
     special_day_list = load_special_day(opts)
-    checkin = check_date(special_day_list)
+    checkin = check_date(special_day_list, now_time)
     if checkin:
-        if option == 'signin': print_information(opts.output_filename, "Today is work day !")
+        if option == 'signin': print_information(opts.output_filename, "{0}/{1:02}/{2:02}: Today need to work  :(".format(now_time.year, now_time.month, now_time.day))
     else:
-        if option == 'signin': print_information(opts.output_filename,  "Today is holiday !")
+        if option == 'signin':
+            print_information(opts.output_filename,  "{0}/{1:02}/{2:02}: Today no need to work :)\n".format(now_time.year, now_time.month, now_time.day) + "-"*50)
         sys.exit()
 
     delay_min = float(opts.delay_time)
@@ -51,7 +52,7 @@ def main():
         print_information(opts.output_filename, json.loads(res.text)['errorMsg'].encode('utf8'))
 
     if option == 'signout':
-        print_information(opts.output_filename, '-------------------------------------------------------')
+        print_information(opts.output_filename, "-"*50)
 
 
 def load_special_day(opts):
@@ -71,11 +72,11 @@ def load_special_day(opts):
     return special_day_list
 
 
-def check_date(list):
-    current_year = datetime.datetime.now().year
-    current_month = datetime.datetime.now().month
-    current_day = datetime.datetime.now().day
-    current_weekday = datetime.datetime.now().weekday()+1
+def check_date(list, now_time):
+    current_year = now_time.year
+    current_month = now_time.month
+    current_day = now_time.day
+    current_weekday = now_time.weekday()+1
 
     if (current_weekday > 5):
         for date_year, date_month, date_day, date_type in list:
